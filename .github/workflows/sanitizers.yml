@@ -1,0 +1,107 @@
+# SPDX-FileCopyrightText: 2025 scc <scc@scc.tw>
+# SPDX-License-Identifier: CC0-1.0
+# Sanitizer verification workflow
+# Runs after build-base workflow completes successfully.
+
+name: Sanitizers Availability
+
+on:
+  workflow_run:
+    workflows: ["Build Images from packages"]
+    types:
+      - completed
+
+jobs:
+  sanitizers:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [clang14, clang15, clang16, clang17, clang18, clang19, clang20, clang21, clang22]
+    container:
+      image: ghcr.io/${{ github.repository }}/${{ matrix.image }}
+    steps:
+      - name: Print clang version
+        run: clang++ --version
+
+      - name: Show resource dir and list sanitizer libs
+        shell: bash
+        run: |
+          set -euo pipefail
+          RD="$(clang++ -print-resource-dir)" || exit 1
+          echo "Resource dir: $RD"
+          ls -1 "$RD/lib/linux" | grep -E 'asan|ubsan' || (echo 'Expected sanitizer runtimes missing' >&2; exit 1)
+
+      - name: Compile & link trivial program with ASan
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'int main(){return 0;}' > t.cpp
+          clang++ -O0 -g -fsanitize=address t.cpp -o t_asan
+          ./t_asan
+
+      - name: Compile & link trivial program with combined ASan+UBSan
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'int f(int*x){ return *x; } int main(){ int *p=nullptr; if(p) return f(p); return 0; }' > u.cpp
+          clang++ -O0 -g -fsanitize=address,undefined u.cpp -o t_combined
+          ./t_combined
+
+      - name: Negative test (expect failure when forcing ODR violation under UBSan)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > o.cpp <<'EOF'
+          int dup();
+          int main(){ return dup(); }
+          EOF
+          cat > p.cpp <<'EOF'
+          int dup(){ return 0; }
+          int dup(){ return 1; }
+          EOF
+          if clang++ -fsanitize=undefined o.cpp p.cpp -o odr 2>err.log; then
+            echo 'Unexpected success; check if compiler failed to diagnose ODR.'
+          else
+            echo 'Compiler emitted diagnostics for ODR as expected.'
+          fi
+
+  gcc-sanitizers:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: sanitizers
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [gcc9, gcc10, gcc11, gcc12, gcc13, gcc14]
+    container:
+      image: ghcr.io/${{ github.repository }}/${{ matrix.image }}
+    steps:
+      - name: Print gcc version
+        run: gcc --version
+
+      - name: Locate sanitizer libraries
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASAN=$(gcc -print-file-name=libasan.so)
+          UBSAN=$(gcc -print-file-name=libubsan.so)
+          echo "libasan: $ASAN"; [ -f "$ASAN" ]
+          echo "libubsan: $UBSAN"; [ -f "$UBSAN" ]
+
+      - name: Compile & link trivial program with ASan (GCC)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'int main(){return 0;}' > g.cpp
+          g++ -O0 -g -fsanitize=address g.cpp -o g_asan
+          ./g_asan
+
+      - name: Compile & link trivial program with ASan+UBSan (GCC)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'int f(int*x){ return *x; } int main(){ int *p=nullptr; if(p) return f(p); return 0; }' > gu.cpp
+          g++ -O0 -g -fsanitize=address,undefined gu.cpp -o g_combined
+          ./g_combined

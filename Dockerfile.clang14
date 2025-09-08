@@ -14,6 +14,7 @@ RUN apt-get install -y --no-install-recommends \
     clang-format-${LLVM_VERSION} \
     libc++-${LLVM_VERSION}-dev \
     libc++abi-${LLVM_VERSION}-dev \
+    libclang-rt-${LLVM_VERSION}-dev \
 && \
     update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${LLVM_VERSION} ${LLVM_VERSION}0 \
                         --slave /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_VERSION} && \
