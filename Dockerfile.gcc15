@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get install -y --no-install-recommends \
     autoconf2.69 dwz lzma xz-utils libzstd-dev zlib1g-dev systemtap-sdt-dev \
-    binutils:native binutils-hppa64-linux-gnu:native gettext nvptx-tools amdgcn-tools-18 \
+    binutils:native gettext nvptx-tools amdgcn-tools-18 \
     texinfo sharutils procps netbase libisl-dev libmpc-dev libmpfr-dev libgmp-dev lib32z1-dev libx32z1-dev && \
     apt-get clean && \
     mkdir -p /root/gcc-15/obj && \
