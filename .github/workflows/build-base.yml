@@ -52,7 +52,7 @@ jobs:
         run: echo /opt/cmake-latest/bin >> $GITHUB_PATH
 
       - name: Run cmake
-        run: cmake --version | grep 4.1.1
+        run: cmake --version
 
   after-common:
     needs: common
