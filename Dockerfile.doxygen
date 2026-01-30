@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright © 2025      GSI Helmholtzzentrum fuer Schwerionenforschung GmbH
+# Copyright © 2025–2026 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH
 #                       Matthias Kretz <m.kretz@gsi.de>
 
 FROM ghcr.io/mattkretz/cplusplus-ci/common
@@ -7,6 +7,7 @@ FROM ghcr.io/mattkretz/cplusplus-ci/common
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN mkdir -p /opt/doxygen/tmp && cd /opt/doxygen/tmp && \
-    curl -L https://www.doxygen.nl/files/doxygen-1.14.0.linux.bin.tar.gz | tar -xz --strip-components=1 && \
+    curl -L $(curl -s https://api.github.com/repos/doxygen/doxygen/releases/latest|jq -r '.assets[] | .browser_download_url'|grep linux.bin) \
+    | tar -xz --strip-components=1 && \
     mv bin/* ../ && cd .. && rm -rf tmp && \
-    update-alternatives --install /usr/bin/doxygen doxygen /opt/doxygen/doxygen 1140 --slave /usr/bin/doxyindexer doxyindexer /opt/doxygen/doxyindexer
+    update-alternatives --install /usr/bin/doxygen doxygen /opt/doxygen/doxygen 1161 --slave /usr/bin/doxyindexer doxyindexer /opt/doxygen/doxyindexer
