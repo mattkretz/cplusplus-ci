@@ -11,23 +11,23 @@ RUN apt-get install -y --no-install-recommends \
     binutils:native gettext nvptx-tools amdgcn-tools-18 \
     texinfo sharutils procps netbase libisl-dev libmpc-dev libmpfr-dev libgmp-dev lib32z1-dev libx32z1-dev && \
     apt-get clean && \
-    mkdir -p /root/gcc-16/obj && \
-    cd /root/gcc-16 && \
-    curl -L https://github.com/gcc-mirror/gcc/archive/releases/gcc-16.tar.gz \
+    mkdir -p /root/gcc-17/obj && \
+    cd /root/gcc-17 && \
+    curl -L https://github.com/gcc-mirror/gcc/archive/master.tar.gz \
     | tar -xz --strip-components=1 && \
     mkdir /root/binutils && cd /root/binutils && \
-    curl -L https://sourceware.org/pub/binutils/releases/binutils-2.45.tar.gz \
+    curl -L https://sourceware.org/pub/binutils/releases/binutils-2.46.0.tar.gz \
     | tar -xz --strip-components=1 && \
-    cd /root/gcc-16 && \
+    cd /root/gcc-17 && \
     ln -s ../binutils/bfd ../binutils/gas ../binutils/binutils ../binutils/ld ../binutils/libctf \
        ../binutils/libsframe ../binutils/opcodes . && \
-    cd /root/gcc-16/obj && \
-    ../configure --enable-languages=c,c++,lto --prefix=/opt/gcc-16 --enable-checking=release --disable-bootstrap && \
+    cd /root/gcc-17/obj && \
+    ../configure --enable-languages=c,c++,lto --prefix=/opt/gcc-17 --enable-checking=release --disable-bootstrap && \
     make BOOT_CFLAGS=-march=x86-64-v3 -j3 && \
     make -j3 install-strip && \
-    update-alternatives --install /usr/bin/gcc-16 gcc-16 /opt/gcc-16/bin/gcc 160 --slave /usr/bin/g++-16 g++-16 /opt/gcc-16/bin/g++ && \
-    update-alternatives --install /usr/bin/gcc gcc /opt/gcc-16/bin/gcc 160 --slave /usr/bin/g++ g++ /opt/gcc-16/bin/g++ && \
-    cd /root && rm -rf gcc-16 && \
+    update-alternatives --install /usr/bin/gcc-17 gcc-17 /opt/gcc-17/bin/gcc 170 --slave /usr/bin/g++-17 g++-17 /opt/gcc-17/bin/g++ && \
+    update-alternatives --install /usr/bin/gcc gcc /opt/gcc-17/bin/gcc 170 --slave /usr/bin/g++ g++ /opt/gcc-17/bin/g++ && \
+    cd /root && rm -rf gcc-17 && \
     apt-get purge --autoremove -y \
     libzstd-dev zlib1g-dev systemtap-sdt-dev \
     libisl-dev libmpc-dev libmpfr-dev libgmp-dev lib32z1-dev libx32z1-dev

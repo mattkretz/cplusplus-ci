@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright © 2025      GSI Helmholtzzentrum fuer Schwerionenforschung GmbH
+# Copyright © 2025–2026 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH
 #                       Matthias Kretz <m.kretz@gsi.de>
 
-name: Build only GCC 16 Image
+name: Build only GCC 17 Image
 
 on:
   workflow_dispatch:  # Allows manual trigger via GitHub UI
@@ -12,7 +12,7 @@ permissions:
   packages: write  # Required to push to GHCR
 
 jobs:
-  gcc16:
+  gcc17:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +33,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile.gcc16
+          file: Dockerfile.gcc17
           push: true
-          tags: ghcr.io/${{ github.repository }}/gcc16
+          tags: ghcr.io/${{ github.repository }}/gcc17
