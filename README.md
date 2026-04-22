@@ -26,6 +26,7 @@ packages installed via APT:
 - `ghcr.io/mattkretz/cplusplus-ci/gcc14`
 - `ghcr.io/mattkretz/cplusplus-ci/gcc15`
 - `ghcr.io/mattkretz/cplusplus-ci/gcc16`
+- `ghcr.io/mattkretz/cplusplus-ci/gcc17`
 
 The GCC images provide `gcc` and `g++` aliases to the respective version. GCC 
 is always installed with multilib support, i.e. `-m32`, `-mx32`, and `-m64` are 
@@ -42,6 +43,7 @@ supported.
 - `ghcr.io/mattkretz/cplusplus-ci/clang20`
 - `ghcr.io/mattkretz/cplusplus-ci/clang21`
 - `ghcr.io/mattkretz/cplusplus-ci/clang22`
+- `ghcr.io/mattkretz/cplusplus-ci/clang23`
 
 The Clang images provide `clang`, `clang++`, `clang-tidy`, and `clang-format` 
 aliases to the respective version.
@@ -70,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [20, 21]
+        version: [21, 22]
 
     runs-on: ubuntu-latest
 
@@ -99,6 +101,6 @@ a step that needs `cmake`:
 
 ## Updates
 
-The `gcc15` and `gcc16` images are updated once per week. All other images are 
+The `gcc15`, `gcc16`, and `gcc17` images are updated once per week. All other images are 
 updated once per month. There may also be manual updates whenever the feature 
 set needs to change.

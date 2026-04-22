@@ -14,7 +14,7 @@ permissions:
   packages: write  # Required to push to GHCR
 
 jobs:
-  gcc15:
+  build:
     strategy:
       matrix:
         image: [gcc15, gcc16, gcc17]
