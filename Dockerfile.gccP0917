@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2025–2026 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH
+#                       Matthias Kretz <m.kretz@gsi.de>
+
+FROM ghcr.io/mattkretz/cplusplus-ci/gcc14
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get install -y --no-install-recommends \
+    autoconf2.69 dwz lzma xz-utils libzstd-dev zlib1g-dev systemtap-sdt-dev \
+    binutils:native gettext nvptx-tools amdgcn-tools-18 \
+    texinfo sharutils procps netbase libisl-dev libmpc-dev libmpfr-dev libgmp-dev lib32z1-dev libx32z1-dev && \
+    apt-get clean && \
+    mkdir -p /root/gcc-17/obj && \
+    cd /root/gcc-17 && \
+    curl -L https://github.com/mattkretz/gcc/archive/P0917_overloadable_conditional_operator.tar.gz \
+    | tar -xz --strip-components=1 && \
+    mkdir /root/binutils && cd /root/binutils && \
+    curl -L https://sourceware.org/pub/binutils/releases/binutils-2.46.0.tar.gz \
+    | tar -xz --strip-components=1 && \
+    cd /root/gcc-17 && \
+    ln -s ../binutils/bfd ../binutils/gas ../binutils/binutils ../binutils/ld ../binutils/libctf \
+       ../binutils/libsframe ../binutils/opcodes . && \
+    cd /root/gcc-17/obj && \
+    ../configure --enable-languages=c,c++,lto --prefix=/opt/gcc-17 --enable-checking=release --disable-bootstrap && \
+    make BOOT_CFLAGS=-march=x86-64-v3 -j3 && \
+    make -j3 install-strip && \
+    update-alternatives --install /usr/bin/gcc-17 gcc-17 /opt/gcc-17/bin/gcc 170 --slave /usr/bin/g++-17 g++-17 /opt/gcc-17/bin/g++ && \
+    update-alternatives --install /usr/bin/gcc gcc /opt/gcc-17/bin/gcc 170 --slave /usr/bin/g++ g++ /opt/gcc-17/bin/g++ && \
+    cd /root && rm -rf gcc-17 && \
+    apt-get purge --autoremove -y \
+    libzstd-dev zlib1g-dev systemtap-sdt-dev \
+    libisl-dev libmpc-dev libmpfr-dev libgmp-dev lib32z1-dev libx32z1-dev

@@ -27,10 +27,14 @@ packages installed via APT:
 - `ghcr.io/mattkretz/cplusplus-ci/gcc15`
 - `ghcr.io/mattkretz/cplusplus-ci/gcc16`
 - `ghcr.io/mattkretz/cplusplus-ci/gcc17`
+- `ghcr.io/mattkretz/cplusplus-ci/gccP0917`
 
 The GCC images provide `gcc` and `g++` aliases to the respective version. GCC 
 is always installed with multilib support, i.e. `-m32`, `-mx32`, and `-m64` are 
 supported.
+
+The [P0917](https://wg21.link/P0917) image is a patched GCC 17 with overloadable 
+`operator?:`.
 
 ## Clang images
 
@@ -47,13 +51,6 @@ supported.
 
 The Clang images provide `clang`, `clang++`, `clang-tidy`, and `clang-format` 
 aliases to the respective version.
-
-## Deprecated images
-
-The
-`ghcr.io/mattkretz/cplusplus-ci/base` and 
-`ghcr.io/mattkretz/cplusplus-ci/latest` images are deprecated and will not be 
-updated anymore.
 
 ---
 
@@ -97,7 +94,6 @@ a step that needs `cmake`:
       - name: Set PATH for cmake-latest
         run: echo /opt/cmake-latest/bin >> $GITHUB_PATH
 ```
-
 
 ## Updates
 
