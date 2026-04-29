@@ -27,7 +27,7 @@ packages installed via APT:
 - `ghcr.io/mattkretz/cplusplus-ci/gcc15`
 - `ghcr.io/mattkretz/cplusplus-ci/gcc16`
 - `ghcr.io/mattkretz/cplusplus-ci/gcc17`
-- `ghcr.io/mattkretz/cplusplus-ci/gccP0917`
+- `ghcr.io/mattkretz/cplusplus-ci/gccp0917`
 
 The GCC images provide `gcc` and `g++` aliases to the respective version. GCC 
 is always installed with multilib support, i.e. `-m32`, `-mx32`, and `-m64` are 
