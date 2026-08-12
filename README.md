@@ -48,6 +48,7 @@ The [P0917](https://wg21.link/P0917) image is a patched GCC 17 with overloadable
 - `ghcr.io/mattkretz/cplusplus-ci/clang21`
 - `ghcr.io/mattkretz/cplusplus-ci/clang22`
 - `ghcr.io/mattkretz/cplusplus-ci/clang23`
+- `ghcr.io/mattkretz/cplusplus-ci/clang24`
 
 The Clang images provide `clang`, `clang++`, `clang-tidy`, and `clang-format` 
 aliases to the respective version.

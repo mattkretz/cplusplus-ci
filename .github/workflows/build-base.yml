@@ -92,7 +92,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [clang19, clang20, clang21, clang22, clang23]
+        image: [clang19, clang20, clang21, clang22, clang23, clang24]
 
     runs-on: ubuntu-latest
 

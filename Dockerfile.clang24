@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2025–2026 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH
+#                       Matthias Kretz <m.kretz@gsi.de>
+
+FROM ghcr.io/mattkretz/cplusplus-ci/gcc14
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV LLVM_VERSION=24
+
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add - && \
+    add-apt-repository "deb http://apt.llvm.org/noble/ llvm-toolchain-noble main" && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    clang-${LLVM_VERSION} \
+    clang-tidy-${LLVM_VERSION} \
+    clang-format-${LLVM_VERSION} \
+    libc++-${LLVM_VERSION}-dev \
+    libc++abi-${LLVM_VERSION}-dev && \
+    apt-get install -y --no-install-recommends libclang-rt-${LLVM_VERSION}-dev && \
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${LLVM_VERSION} ${LLVM_VERSION}0 \
+                        --slave /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_VERSION} && \
+    update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-${LLVM_VERSION} ${LLVM_VERSION}0 && \
+    update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_VERSION} ${LLVM_VERSION}0 && \
+    apt-get clean
